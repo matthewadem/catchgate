@@ -1,0 +1,19 @@
+# NEVER commit malicious package samples or detonation artifacts
+samples/
+corpora/
+traces/
+*.tar.gz
+
+# Raw logs are big and may contain payload strings - keep local
+*.log
+
+# Secrets / credentials (canary or otherwise)
+.env
+.npmrc
+*.pem
+credentials*
+
+# OS / Python noise
+.DS_Store
+__pycache__/
+.venv/
