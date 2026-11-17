@@ -4,11 +4,12 @@ One entry per experiment session. This log is the reproducibility record for the
 
 ```
 ## YYYY-MM-DD — <short title>
-- Goal: what this session tried to establish
+- Goal: Containerized sandbox and install runner test.
 - Environment: host, VM/container image, tool versions
-- What I ran: commands (exact)
-- What happened: observed output / surprises
-- Conclusion: what this means / next step
+- What I ran: docker run --rm --network none catchgate-sandbox npm install "$PACKAGE", chmod +x scripts/run_install.sh
+./scripts/run_install.sh left-pad
+- What happened: Failed install
+- Conclusion: Sandbox is successfully being cut off from network access.
 ```
 
 ---
