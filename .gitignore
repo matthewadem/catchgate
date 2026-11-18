@@ -17,3 +17,6 @@ credentials*
 .DS_Store
 __pycache__/
 .venv/
+corpus/
+docs/reading-notes/
+docs/sessions/
