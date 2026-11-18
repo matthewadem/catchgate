@@ -10,3 +10,4 @@ RUN apt-get update && apt-get install -y --no-install-recommends strace && rm -r
 RUN useradd -m -s /bin/bash devuser
 USER devuser
 WORKDIR /home/devuser/project
+RUN npm init -y
