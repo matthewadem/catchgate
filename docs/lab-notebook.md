@@ -88,3 +88,9 @@ One entry per experiment session, appended in chronological order. Entry dates m
 - **Vignette 1 (same attacker, two lenses):** `auth0-mcp-server` — GuardDog statically flagged the `http://54.173.15.59:8080` dependency URL in package.json; CatchGate independently saw live connection attempts to that same IP at install.
 - **Vignette 2 (same behavior class, disjoint catches):** GuardDog's top rule was `threat.runtime.system.info` (17 hits, static whoami/hostname patterns), yet 16 packages *executed* recon at install without static signatures — CatchGate caught them in the act.
 - **Honest caveats for the paper:** (1) GuardDog ran on local directories without registry metadata, so its rules that rely on registry context were handicapped — its real-world rate is higher; (2) most samples were originally found *by* GuardDog, so the dataset favors its signatures; (3) CatchGate's 19 includes only install-window behavior by design. The claim is not "behavioral beats static" — it is "the two lenses are near-orthogonal, and a free gate can have the behavioral one."
+
+### Benign false-positive test, Config A (2026-11-21)
+
+- 41 popular npm packages (fixed top-downloaded list incl. webpack, typescript, eslint, vite, express) through the full pipeline.
+- **41/41 ALLOW — 0 false positives (FP rate 0.0%).** The build-tool allowlist and DNS exemption held at scale, including dependency-heavy packages.
+- Config-B (pre-staged + strict-DNS) benign re-run pending; that cell completes the 2x2 matrix.
