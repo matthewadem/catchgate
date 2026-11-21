@@ -70,3 +70,12 @@ One entry per experiment session, appended in chronological order. Entry dates m
 - Implementation AI-assisted; sample selection is seeded and reproducible, and every diagnosis above came from reading the traces.
 
 > Reproducibility note: raw traces live in `traces/` (gitignored by design — they're data, not source). The commands above regenerate them exactly.
+
+### Overnight results (full run, same day)
+
+- **99/99 scanned, zero harness errors.** Verdicts: **19 BLOCK / 80 ALLOW** — 19.2% raw, **28.4% against the 67 packages that have install hooks** (the honest denominator).
+- **Catch composition, all verified from traces:**
+  - *3 network catches (R1+R2):* `auth0-mcp-server` (raw IP :8080), `ecto-engine` (**23 connect attempts** — a determined exfiltrator; the star case study), `oxrvlllcaj`.
+  - *16 recon catches (R3):* every one executed `whoami`/`hostname` (two also `date`, one `cat`) — environment fingerprinting, the exact class BKC documented in 41% of attacks. Recon is the dominant observable behavior in this sample.
+- **Allowlist held perfectly:** zero build-tool false positives across 99 malicious + 6 benign runs. Every BLOCK cites verified behavior.
+- Known misses remain the three diagnosed classes (hostname-exfil offline-invisible, sandbox-incomplete payloads, require-time payloads). Next: GuardDog paired baseline on the same 99, then dependency pre-staging upgrade and re-run to measure the delta.
