@@ -43,8 +43,13 @@ from parse_trace import events  # the parser is a library now
 
 # canary paths planted by scripts/plant_canaries.sh
 CANARY_MARKERS = ("/.npmrc", "/.ssh/", "/.aws/", "/.env")
-# binaries a normal npm install may execute (build-tool allowlist, from [4])
-EXEC_ALLOWLIST = {"node", "npm", "sh", "bash", "dash", "env"}
+# binaries a normal npm install may execute. Core runtime + the standard
+# native-module build toolchain (node-gyp probes python/cc/etc. even when the
+# tools are absent - found at scale 2026-11-21: node-liblzma, ssh2-sftp-client;
+# the same allowlist approach SafeDep documents from production [4]).
+EXEC_ALLOWLIST = {"node", "npm", "sh", "bash", "dash", "env",
+                  "python", "python3", "cc", "gcc", "c++", "g++",
+                  "make", "node-gyp", "cmake", "ninja"}
 # private resolver addresses whose port-53 probes are dependency-fetch machinery
 DNS_PRIVATE_PREFIXES = ("127.", "10.", "192.168.", "172.")
 

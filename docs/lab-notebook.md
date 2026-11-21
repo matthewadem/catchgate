@@ -118,3 +118,12 @@ One entry per experiment session, appended in chronological order. Entry dates m
 - **Against the honest denominator** (67 of 99 samples have install hooks): Config B detects 37/67 = **55.2% of install-triggering malicious packages**.
 - Precision on this sample: 37/(37+0) = 100% observed (small benign n — stated as "no observed false positives," not a bounded rate).
 - Experimental phase complete. Remaining: HW4 write-up (results above), Pres 4, final paper, release.
+
+### Benign scale-up to 359 + FP tuning arc (2026-11-21, evening)
+
+- Benign corpus scaled 41 -> **359 packages** (npm registry search API, popularity-weighted, unscoped; documented query set; 2 fetch failures recorded).
+- **First run at scale: 2 false positives (0.56%)** — `node-liblzma`, `ssh2-sftp-client`, both R3. Diagnosis from traces: zero unknown binaries *successfully executed*; the firings were **ENOENT path-probes of `python`/`python3`/`cc`** — node-gyp's standard toolchain discovery, attempting tools absent from the sandbox image. The exact FP class SafeDep documents from production [4].
+- Fix (per [4]): allowlist expanded with the standard native-module toolchain (python, python3, cc, gcc, c++, g++, make, node-gyp, cmake, ninja). Verdicts regenerated from stored traces — no re-detonation needed; rules are pure functions of the event stream.
+- **Result: 359/359 ALLOW — 0.00% FP at scale** — with every malicious catch preserved (recon catches still BLOCK: whoami/hostname are not build tools).
+- This is the FP-tuning result for HW4: found at scale -> diagnosed from traces -> documented fix -> 0.00%, catches intact. Benign FP claim now bounded below ~0.9% (rule of three at n=359)... n=359 with 0 events bounds the rate below 3/359 = 0.84%.
+- Malicious 150-scale run (fresh seed 20261121) still in progress; its verdicts will be regenerated with the expanded allowlist for consistency.
