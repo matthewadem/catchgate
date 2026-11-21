@@ -34,6 +34,7 @@ the first evidence pair for each -- one burst of retries reads as one rule
 with count 13, not 13 entries).
 """
 import json
+import os
 import sys
 from pathlib import Path
 
@@ -49,6 +50,11 @@ DNS_PRIVATE_PREFIXES = ("127.", "10.", "192.168.", "172.")
 
 
 def is_dns_machinery(target):
+    # CATCHGATE_STRICT_DNS=1 disables the exemption: with dependency
+    # pre-staging in place, the offline install needs no DNS at all, so any
+    # resolver attempt is signal (hostname-based exfiltration becomes visible).
+    if os.environ.get("CATCHGATE_STRICT_DNS"):
+        return False
     addr, _, port = target.rpartition(":")
     return port == "53" and addr.startswith(DNS_PRIVATE_PREFIXES)
 

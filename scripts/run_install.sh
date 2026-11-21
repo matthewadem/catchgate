@@ -18,12 +18,20 @@ case "$TARBALL" in /*) SRC="$TARBALL" ;; *) SRC="$ROOT/$TARBALL" ;; esac
 echo "[catchgate] building sandbox image..."
 docker build -t catchgate-sandbox "$ROOT/docker" >/dev/null
 
+CACHE_MOUNT=""
+CACHE_FLAGS=""
+if [ -d "$ROOT/corpus/npm-cache" ]; then
+  CACHE_MOUNT="-v $ROOT/corpus/npm-cache:/npmcache"
+  CACHE_FLAGS="--offline --cache /npmcache"
+fi
+
 echo "[catchgate] installing ${TARBALL} -> traces/${NAME}.trace ..."
 docker run --rm --network none \
   -v "$ROOT/traces:/traces" \
   -v "$SRC:/pkg.tgz:ro" \
   -v "$ROOT/scripts/plant_canaries.sh:/home/devuser/plant.sh:ro" \
+  $CACHE_MOUNT \
   catchgate-sandbox \
-  bash -c "bash ~/plant.sh \$HOME && cd ~/project && timeout 90 strace -f -o /traces/${NAME}.trace npm install --no-audit --no-fund /pkg.tgz"
+  bash -c "bash ~/plant.sh \$HOME && cd ~/project && timeout 90 strace -f -o /traces/${NAME}.trace npm install --no-audit --no-fund $CACHE_FLAGS /pkg.tgz"
 
 echo "[catchgate] done -> traces/${NAME}.trace"
