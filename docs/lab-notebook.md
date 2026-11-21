@@ -103,3 +103,18 @@ One entry per experiment session, appended in chronological order. Entry dates m
 - **Config B vs GuardDog: 37 vs 40, overlap only 18.** CatchGate-B catches 19 packages the static scanner misses; union 59/99 (59.6%). Near-orthogonality holds at higher coverage.
 - Unit verification of the mechanism: `is-even` (dependencies) installs completely offline in Config B — 885 file ops, zero connects, strict ALLOW. The DNS signal is now unambiguous.
 - Benign Config-B re-run queued; completes the 2x2 matrix.
+
+### The 2x2 matrix is complete (2026-11-21, final experimental result)
+
+| | Malicious (n=99) | Benign (n=41) |
+|---|---|---|
+| Config A (offline, DNS exempt) | 19/99 = 19.2% | 0 FP (41/41 ALLOW) |
+| **Config B (prestaged, strict DNS)** | **37/99 = 37.4%** | **0 FP (41/41 ALLOW)** |
+| GuardDog (static baseline) | 40/99 = 40.4%* | - |
+
+*handicapped: local-dir scan without registry metadata, on a dataset largely discovered by GuardDog itself.
+
+- **Headline: 37.4% detection with zero observed false positives** — the strict configuration that recovered the hostname-exfiltration class introduced no FPs, including on dependency-heavy build tooling (webpack, typescript, vite, eslint) prestaged and installed fully offline.
+- **Against the honest denominator** (67 of 99 samples have install hooks): Config B detects 37/67 = **55.2% of install-triggering malicious packages**.
+- Precision on this sample: 37/(37+0) = 100% observed (small benign n — stated as "no observed false positives," not a bounded rate).
+- Experimental phase complete. Remaining: HW4 write-up (results above), Pres 4, final paper, release.
