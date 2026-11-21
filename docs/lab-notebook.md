@@ -94,3 +94,12 @@ One entry per experiment session, appended in chronological order. Entry dates m
 - 41 popular npm packages (fixed top-downloaded list incl. webpack, typescript, eslint, vite, express) through the full pipeline.
 - **41/41 ALLOW — 0 false positives (FP rate 0.0%).** The build-tool allowlist and DNS exemption held at scale, including dependency-heavy packages.
 - Config-B (pre-staged + strict-DNS) benign re-run pending; that cell completes the 2x2 matrix.
+
+### S08 result: the ablation (Config B, 2026-11-21)
+
+- **Pre-staging + strict DNS nearly doubled detection: 19/99 (19.2%) -> 37/99 (37.4%).**
+- All 19 new catches fire the R1 chain (canary read -> DNS-resolution attempt): the hostname-exfiltration class, invisible in Config A, recovered by design. Six also fired R3.
+- **One Config-A catch lost:** `auth0-mcp-server` — its exfil channel IS a dependency URL (`http://54.173.15.59:8080/...` in package.json); in Config B the offline install aborts on that non-cacheable http dependency before its payload runs, so no behavior occurs. The gate doesn't flag it, but it also refuses the channel — a trade to document, not hide.
+- **Config B vs GuardDog: 37 vs 40, overlap only 18.** CatchGate-B catches 19 packages the static scanner misses; union 59/99 (59.6%). Near-orthogonality holds at higher coverage.
+- Unit verification of the mechanism: `is-even` (dependencies) installs completely offline in Config B — 885 file ops, zero connects, strict ALLOW. The DNS signal is now unambiguous.
+- Benign Config-B re-run queued; completes the 2x2 matrix.
