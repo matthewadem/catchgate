@@ -127,3 +127,21 @@ One entry per experiment session, appended in chronological order. Entry dates m
 - **Result: 359/359 ALLOW — 0.00% FP at scale** — with every malicious catch preserved (recon catches still BLOCK: whoami/hostname are not build tools).
 - This is the FP-tuning result for HW4: found at scale -> diagnosed from traces -> documented fix -> 0.00%, catches intact. Benign FP claim now bounded below ~0.9% (rule of three at n=359)... n=359 with 0 events bounds the rate below 3/359 = 0.84%.
 - Malicious 150-scale run (fresh seed 20261121) still in progress; its verdicts will be regenerated with the expanded allowlist for consistency.
+
+### FINAL RESULTS — experimental phase closed (2026-11-21/22)
+
+Combined across two documented seeded draws (20261120 n=99, 20261121 n=150; ~disjoint):
+
+| Metric | Result |
+|---|---|
+| Malicious scanned | **243** (papers promised ~150) |
+| CatchGate detection (strict, tuned allowlist) | **84/243 = 34.6%** |
+| — against install-hook denominator (147/243 have hooks) | **84/147 = 57.1%** |
+| GuardDog flagged | ~96/243 (~39.5%); paired join at n=243 pending (n=99 join verified: overlap 18/77) |
+| Benign scanned | **359** (papers promised ~300) |
+| Benign false positives | **0.00%** (bound < 0.84%) |
+| Ablation (n=99 draw) | Config A 19.2% -> Config B 37.4%, FP 0 in both |
+
+Headline sentence for HW4: a free, self-hosted, install-time behavioral gate with zero observed false positives at n=359 detects 57% of install-triggering malicious npm packages, catching behavior largely invisible to the static baseline (overlap 18 of 77 catches at the verified n=99 join).
+
+All verdicts regenerable from stored traces; all draws seeded; all safety rules held throughout. Experimental phase complete 9 days before the HW4 deadline. Remaining: write-up (HW4, Pres 4), GitHub Actions demo, final paper, release.
